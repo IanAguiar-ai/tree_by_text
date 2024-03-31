@@ -11,6 +11,7 @@ texto = {"nome":{"ing":"Graph Assembler","pt":"Montador de Grafos"},
          "exportar":{"ing":"Export", "pt":"Exportar"},
          "importar":{"ing":"Import", "pt":"Importar"},
          "compilar":{"ing":"To compile", "pt":"Compilar"},
+         "salvo":{"ing":"Saved", "pt":"Salvo"},
          "instrucao_export":{"ing":"In the file on the left (items), put the name of the file, for example, <o_nome_entre_os_simbolos>","pt":"No arquivo da esquerda (itens), coloque o nome do arquivo, por exemplo, <o_nome_entre_os_simbolos>"}}
 
 def suave_desca(inicio:int, fim:int) -> list:
@@ -58,7 +59,7 @@ class Aplicativo(tk.Tk):
         self.geometry("600x400")
 
         #Caixa de animação:
-        self.caixa_animacao = tk.Label(self, text = "Salvo", bg = cores["popup"], bd = 1, relief = "solid", font = ("Times", 20))
+        self.caixa_animacao = tk.Label(self, text = texto["salvo"][idioma], bg = cores["popup"], bd = 1, relief = "solid", font = ("Times", 20))
         self.caixa_animacao.place(x = 20, y= -32)
     
         # Criando as caixas de texto
