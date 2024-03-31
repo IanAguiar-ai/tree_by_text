@@ -1,0 +1,16 @@
+<teste_3_imagem>
+#Templates:
+[pasta] = orange, folder, filled
+[variavel_1] = red, box, dotted
+[variavel_2] = orange, doubleoctagon, dotted
+
+#Pastas:
+pasta_1, [pasta]
+pasta_2, [pasta]
+pasta_3, [pasta]
+
+#Variaveis:
+var_1, [variavel_1]
+var_2, [variavel_1]
+var_3, [variavel_1]
+var_4, [variavel_2]

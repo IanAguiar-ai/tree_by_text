@@ -1,0 +1,14 @@
+#Resumos:
+variaveis_indiretas = var_10.c, var_11.h, var_ 12
+
+#Caminho de pastas:
+pasta_1 -{ pasta_2, pasta_3
+pasta_2 -> /pasta_4 -> /pasta_5
+
+#Caminho das variáveis:
+pasta_3 -{ /pasta_6, var_1, var_2
+var_2, var_3 }{ variaveis_indiretas, var_7
+
+a <> b
+c1 -> c2 -{ c3, c4 }- c5, c6 -> c7, c8 -{ c9, c10 -> c11 -{ c12, c13, c14 <- k10
+z1 -> z2 <- z3 -> z4 -> z6 <- z5 
