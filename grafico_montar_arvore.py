@@ -135,7 +135,7 @@ class Aplicativo(tk.Tk):
         except RuntimeError:
             pass
 
-    def obter_complementos(self) -> None:
+    def obter_complementos(self) -> (str, str, str):
         """
         Obtém os complementos para exibir na caixa_texto3
         """
@@ -153,7 +153,7 @@ class Aplicativo(tk.Tk):
             n:int = 0
             caminhos_conhecidos:set = set(itens.keys())
             for i in itens:
-                complemento_1 += f"({texto['indefinido'][self.__idioma]} {n:02}) {i}\n"
+                complemento_1 += f"({texto['definidos'][self.__idioma]} {n:02}) {i}\n"
                 n += 1
         except:
             pass
@@ -178,13 +178,13 @@ class Aplicativo(tk.Tk):
 
         return complemento_1, complemento_2, nome_conteudo
 
-    def atualizar_caixa_texto3(self, texto1, texto2, nome_conteudo, complemento_1, complemento_2):
+    def atualizar_caixa_texto3(self, texto1, texto2, nome_conteudo, complemento_1, complemento_2) -> None:
         """
         Atualiza o texto na caixa_texto3
         """
         self.caixa_texto3.config(state="normal")
         self.caixa_texto3.delete("1.0", "end")
-        self.caixa_texto3.insert("1.0", f"{texto['itens'][self.__idioma]}: {len(texto1)} chr\n{texto['caminhos'][self.__idioma]}: {len(texto2)} chr\nNome: {nome_conteudo}\n{complemento_1}\n{complemento_2}")
+        self.caixa_texto3.insert("1.0", f"{texto['itens'][self.__idioma]}: {len(texto1)} chr\n{texto['caminhos'][self.__idioma]}: {len(texto2)} chr\nNome: {nome_conteudo}\n\n{complemento_1}\n{complemento_2}")
         self.caixa_texto3.config(state="disabled")
 
 
@@ -241,7 +241,7 @@ class Aplicativo(tk.Tk):
             self.__instrucoes.mainloop()
             return
 
-    def exibir_popup_salvo(self):
+    def exibir_popup_salvo(self) -> None:
         if not self.__animacao:
             self.caixa_animacao.lift()  # Eleva a caixa acima de outros widgets
             self.__animacao = True
