@@ -2,92 +2,7 @@ import os
 from graphviz import Digraph
 from padroes_base import padrao_h, padrao_c, padrao_pasta
 
-exemplo_itens = """
-#Templates:
-[pasta] = orange, folder, filled
-[variavel_1] = red, box, dotted
-[variavel_2] = orange, doubleoctagon, dotted
-
-#Pastas:
-pasta_1, [pasta]
-pasta_2, [pasta]
-pasta_3, [pasta]
-
-#Variaveis:
-var_1, [variavel_1]
-var_2, [variavel_1]
-var_3, [variavel_1]
-var_4, [variavel_2]
-"""
-
-exemplo_caminho = """
-#Resumos:
-variaveis_indiretas = var_10.c, var_11.h, var_ 12
-
-#Caminho de pastas:
-pasta_1 -{ pasta_2, pasta_3
-pasta_2 -> /pasta_4 -> /pasta_5
-
-#Caminho das variáveis:
-pasta_3 -{ /pasta_6, var_1, var_2
-var_2, var_3 }{ variaveis_indiretas, var_7
-
-#Dependencia:
-a <> b
-"""
-
-instrucoes = f"""
-Um exemplo do arquivo de itens é:
-{exemplo_itens}
-{'-'*50}
-
-Onde existir '#' o programa ignora a leitura desta linha.
-
-Um exemplo do arquivo de caminhos:
-{exemplo_caminho}
-{'-'*50}
-
-'->' Faz uma ligação um a um;
-'<-' Faz uma ligação um a um invertido;
-'-{chr(123)}' Faz uma ligação um para varios;
-'{chr(125)}-' Faz uma ligação varios para um;
-'{chr(125)}{chr(123)}' Faz uma ligação varios para varios;
-'=' Define uma variável como vários itens;
-'<>' Ligação dupla, por exemplo, a <> b é a mesma coisa que a -> b + b -> a;
-
-
-Formato do arquivo com os itens:
-\tname, color, shape, style
-
-colors:
-    blue
-    red
-    yellow
-    green
-    lightblue
-
-shapes:
-    folder
-    rectangle
-    parallelogram
-    trapezium
-    doublecircle
-    diamond
-    oval
-    box
-    plaintext
-    doubleoctagon
-
-style:
-    filled
-    solid
-    dashed
-    dotted
-    invisible
-"""
-
 #print(instructions)
-
 def criar_diretorios() -> None:
     """
     Cria diretórios
@@ -97,7 +12,7 @@ def criar_diretorios() -> None:
         if not _dir_ in os.listdir():
             os.mkdir(_dir_)
 
-def ver_caminhos(file:str) -> list:
+def ver_caminhos(file:str, normal:bool = True) -> list:
     """
     Trata o arquivo do caminho
     """
@@ -144,9 +59,12 @@ def ver_caminhos(file:str) -> list:
             for operacoes in separar_operadores(temp):
                 novo_con.append(operacoes)
         return novo_con
-    
-    with open("backups/backups/backups.caminhos", "r") as arq:
-        con:list = arq.read()
+
+    if normal == True:
+        with open("backups/backups/backups.caminhos", "r") as arq:
+            con:list = arq.read()
+    else:
+        con = normal
 
     con:list = tratar_caminhos_multiplos(con.replace(" ","").split("\n"))
     deletar_pre_tratamento:list = []
@@ -165,7 +83,6 @@ def ver_caminhos(file:str) -> list:
 
     for i in range(len(con)):
         if con[i].find("#") > -1:
-            print(f"ATENCAO: Apagando linha {i} -> ({con[i]})")
             con[i] = ""
 
         if con[i].find("<-") > -1:
@@ -174,24 +91,18 @@ def ver_caminhos(file:str) -> list:
         
         #Corrigindo erros no txt:
         if con[i].find("->") > -1 and con[i].find(",") > -1:
-            print(f"ATENCAO: Erro de formatação em: {con[i]} | TENTANDO CORRIGIR:", end = " ")
             if con[i].find(",") < con[i].find("->") < con[i].rfind(","):
                 con[i] = con[i].replace("->", "}{")
             elif con[i].find("->") > con[i].find(","):
                 con[i] = con[i].replace("->", "}-")
             elif con[i].find("->") < con[i].find(","):
                 con[i] = con[i].replace("->", "-{")
-            print(f"{con[i]}")
 
         if -1 < con[i].find("}-") < con[i].rfind(","):
-            print(f"ATENCAO: Erro de formatação em: {con[i]} | TENTANDO CORRIGIR:", end = " ")
             con[i] = con[i].replace("}-", "}{")
-            print(f"{con[i]}")
 
         if -1 < con[i].find(",") < con[i].find("-{"):
-            print(f"ATENCAO: Erro de formatação em: {con[i]} | TENTANDO CORRIGIR:", end = " ")
             con[i] = con[i].replace("-{", "}{")
-            print(f"{con[i]}")
 
         con[i] = con[i].split("->")
         if con[i][0].find("-{") > -1:
@@ -235,12 +146,15 @@ def ver_caminhos(file:str) -> list:
 
     return final_con
 
-def ver_itens(file:str) -> dict:
+def ver_itens(file:str, normal:bool = True) -> dict:
     """
     Trata o arquivo do iten
     """
-    with open("backups/backups/backups.itens", "r") as arq:
-        iten:list = arq.read()
+    if normal == True:
+        with open("backups/backups/backups.itens", "r") as arq:
+            iten:list = arq.read()
+    else:
+        iten = normal
 
     iten:list = iten.replace(" ","").split("\n")
     deletar_pre_tratamento = []
@@ -270,7 +184,6 @@ def ver_itens(file:str) -> dict:
                 itens_for_del.append(i)
 
     for i in sorted(itens_for_del, reverse = True):
-        print(f"ATENCAO: Apagando linha {i} -> ({', '.join(iten[i])})")
         del iten[i]
         
     itens = {}
@@ -305,13 +218,11 @@ def todos_pontos(itens:dict, caminhos:list) -> dict:
                 itens[ponto[0]] = {"shape":"*",
                                    "color":"*",
                                    "style":"*"}
-                print(f"Configurando {ponto[0]}...")
 
             if not ponto[1] in itens:
                 itens[ponto[1]] = {"shape":"*",
                                    "color":"*",
                                    "style":"*"}
-                print(f"Configurando {ponto[1]}...")
     return itens
 
 def montar_grafo(itens:dict, caminhos:list, _montar_grafo_) -> None:
@@ -386,7 +297,7 @@ def captar_arquivos() -> (list, list, list):
                 todos_caminhos.append(caminho)
             else:
                 if procurar != "":
-                    print(f"\tERRO: '{procurar}' <- não está no formato correto, deveria ser -> 'nome itens.txt caminhos.txt'")
+                    pass
     return todos_nomes, todos_itens, todos_caminhos
 
 def gerar_grafo(itens:str, caminhos:str, nome:str, pasta:str) -> None:
@@ -405,7 +316,6 @@ if __name__ == "__main__":
     nomes, itens, caminhos = captar_arquivos()
 
     for i in range(len(nomes)):
-        print(f"\n\n{'='*25}({nomes[i]}){'='*25}")
         nome:str = nomes[i]
         iten:dict = itens[i]
         caminho:list = caminhos[i]
@@ -413,4 +323,3 @@ if __name__ == "__main__":
         grafo = Digraph(nome, format='png')
         montar_grafo(iten, caminho, grafo)
         grafo.render(filename = f'arvores§/{nome}', cleanup = True, format = 'png', engine = 'dot')
-        print(f"\nÁrvore de diretórios gerada e salva como arvores§/{nome}.png")

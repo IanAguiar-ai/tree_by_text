@@ -1,8 +1,10 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
-from automatic_graph import criar_diretorios, gerar_grafo
+from automatic_graph import criar_diretorios, gerar_grafo, ver_itens, ver_caminhos
 from os import path, mkdir, listdir
 from re import sub
+from time import sleep
+import threading
 
 texto = {"nome":{"ing":"Graph Assembler","pt":"Montador de Grafos"},
          "aviso":{"ing":"Notice", "pt":"Aviso"},
@@ -12,12 +14,24 @@ texto = {"nome":{"ing":"Graph Assembler","pt":"Montador de Grafos"},
          "importar":{"ing":"Import", "pt":"Importar"},
          "compilar":{"ing":"To compile", "pt":"Compilar"},
          "salvo":{"ing":"Saved", "pt":"Salvo"},
+         "cor":{"ing":"Color", "pt":"Cor"},
+         "lingua":{"ing":"Language", "pt":"Lingua"},
+         "indefinido":{"ing":"Undefined", "pt":"Indefinido"},
+         "definidos":{"ing":"Defined", "pt":"Definidos"},
+         "esperando":{"ing":"Waiting...", "pt":"Esperando..."},
+         "itens":{"ing":"Itens", "pt":"Itens"},
+         "caminhos":{"ing":"Paths", "pt":"Caminhos"},
          "instrucao_export":{"ing":"In the file on the left (items), put the name of the file, for example, <o_nome_entre_os_simbolos>","pt":"No arquivo da esquerda (itens), coloque o nome do arquivo, por exemplo, <o_nome_entre_os_simbolos>"}}
+
+cores = {"fundo":{"escuro":"#4e4e4e", "claro":"#b5b5b5"},
+         "botao":{"escuro":{"bg":"#333333", "fg":"white"}, "claro":{"bg":"#cccccc", "fg":"black"}},
+         "?":{"escuro":{"bg":"#8d8d8e", "fg":"white"}, "claro":{"bg":"#898989", "fg":"black"}},
+         "popup":{"escuro":"#727271", "claro":"#b1b1b4"}}
 
 def suave_desca(inicio:int, fim:int) -> list:
     valores:list = []
     valor:float = inicio
-    i = 2.5
+    i:float = 2.5
     while True:
         #i *= 0.97
         i -= 0.062
@@ -33,7 +47,7 @@ def suave_desca(inicio:int, fim:int) -> list:
 def suave_suba(inicio:int, fim:int) -> list:
     valores:list = []
     valor:float = inicio
-    i = 0
+    i:float = 0
     while True:
         #i *= 0.97
         i += 0.062
@@ -46,41 +60,45 @@ def suave_suba(inicio:int, fim:int) -> list:
 
 class Aplicativo(tk.Tk):
     def __init__(self):
-        cores = {"fundo":"#4e4e4e",
-                 "botao":{"bg":"#333333", "fg":"white"},
-                 "?":{"bg":"#8d8d8e", "fg":"white"},
-                 "popup":"#8d8d8e"}
         self.__animacao = False
         self.__instrucoes = None
+        self.__cor = "escuro"
+        self.__idioma = "ing"
         
         super().__init__()
-        self.title(texto["nome"][idioma])
-        self.configure(bg = cores["fundo"])
-        self.geometry("600x400")
+        self.title(texto["nome"][self.__idioma])
+        self.configure(bg = cores["fundo"][self.__cor])
+        self.geometry("700x500")
 
         #Caixa de animação:
-        self.caixa_animacao = tk.Label(self, text = texto["salvo"][idioma], bg = cores["popup"], bd = 1, relief = "solid", font = ("Times", 20))
+        self.caixa_animacao = tk.Label(self, text = texto["salvo"][self.__idioma], bg = cores["popup"][self.__cor], bd = 1, relief = "solid", font = ("Times", 20))
         self.caixa_animacao.place(x = 20, y= -32)
     
         # Criando as caixas de texto
         self.caixa_texto1 = tk.Text(self, width = 40, height = 30, font = "Times 12", borderwidth = 2, relief = "sunken")
         self.caixa_texto2 = tk.Text(self, width = 40, height = 30, font = "Times 12", borderwidth = 2, relief = "sunken")
+        self.caixa_texto3 = tk.Text(self, width = 25, height = 30, font = "Times 12", borderwidth = 2, relief = "sunken")
     
         # Posicionando as caixas de texto usando grid
         self.caixa_texto1.grid(row = 0, column = 0, columnspan = 1, padx = 10, pady = 10, sticky = "nsew")
-        self.caixa_texto2.grid(row = 0, column = 1, columnspan = 3, padx = 10, pady = 10, sticky = "nsew")
+        self.caixa_texto2.grid(row = 0, column = 1, columnspan = 1, padx = 10, pady = 10, sticky = "nsew")
+        self.caixa_texto3.grid(row = 0, column = 4, columnspan = 2, padx = 10, pady = 10, sticky = "nsew")
     
         # Criando os botões
-        self.botao_duvida = tk.Button(self, text = "?", command = self.duvida, bg = cores["?"]["bg"], fg = cores["?"]["fg"])
-        self.botao_exportar = tk.Button(self, text = texto["exportar"][idioma], command = self.exportar, bg = cores["botao"]["bg"], fg = cores["botao"]["fg"])
-        self.botao_importar = tk.Button(self, text = texto["importar"][idioma], command = self.importar, bg = cores["botao"]["bg"], fg = cores["botao"]["fg"])
-        self.botao_compilar = tk.Button(self, text = texto["compilar"][idioma], command = self.compilar, bg = cores["botao"]["bg"], fg = cores["botao"]["fg"])
-    
+        self.botao_duvida = tk.Button(self, text = "?", command = self.duvida, bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
+        self.botao_exportar = tk.Button(self, text = texto["exportar"][self.__idioma], command = self.exportar, bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+        self.botao_importar = tk.Button(self, text = texto["importar"][self.__idioma], command = self.importar, bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+        self.botao_compilar = tk.Button(self, text = texto["compilar"][self.__idioma], command = self.compilar, bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+        self.botao_cor = tk.Button(self, text = texto["cor"][self.__idioma], command = self.mudar_cor, bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
+        self.botao_linguagem = tk.Button(self, text = texto["lingua"][self.__idioma], command = self.mudar_lingua, bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+
         # Posicionando os botões usando grid
-        self.botao_duvida.grid(row = 1, column = 3, columnspan = 1, padx = 5, pady = 0, sticky = "ew")
-        self.botao_exportar.grid(row = 1, column = 1, columnspan = 1, padx = 10, pady = 10, sticky = "ew")
-        self.botao_importar.grid(row = 1, column = 0, columnspan = 1, padx = 10, pady = 10, sticky = "ew")
+        self.botao_duvida.grid(row = 1, column = 5, columnspan = 1, padx = 5, pady = 0, sticky = "ew")
+        self.botao_exportar.grid(row = 1, column = 3, columnspan = 2, padx = 10, pady = 10, sticky = "ew")
+        self.botao_importar.grid(row = 1, column = 0, columnspan = 3, padx = 10, pady = 10, sticky = "ew")
         self.botao_compilar.grid(row = 2, column = 0, columnspan = 4, padx = 10, pady = 10, sticky = "ew")
+        self.botao_cor.grid(row = 2, column = 5, columnspan = 1, padx = 10, pady = 10, sticky = "ew")
+        self.botao_linguagem.grid(row = 2, column = 4, columnspan = 1, padx = 10, pady = 10, sticky = "ew")
 
         # Configurando a geometria da janela para redimensionamento
         self.grid_columnconfigure(0, weight = 1)
@@ -90,6 +108,9 @@ class Aplicativo(tk.Tk):
 
         # Atualizar a altura das caixas de texto ao redimensionar
         self.bind("<Configure>", self.atualizar_altura_caixas_texto)
+
+        # Iniciar a thread
+        threading.Thread(target=self.atualizar_caixa).start()
   
     def atualizar_altura_caixas_texto(self, event) -> None:
         """
@@ -99,22 +120,124 @@ class Aplicativo(tk.Tk):
         self.caixa_texto1.config(height = altura)
         self.caixa_texto2.config(height = altura)
 
+    def atualizar_caixa(self):
+        """
+        Atualiza o contador de caracteres na caixa_texto3 a cada 5 segundos
+        """
+        try:
+            while True:
+                complemento_1, complemento_2, nome_conteudo = self.obter_complementos()
+                texto1:str = self.caixa_texto1.get("1.0", "end-1c")
+                texto2:str = self.caixa_texto2.get("1.0", "end-1c")
+
+                self.atualizar_caixa_texto3(texto1, texto2, nome_conteudo, complemento_1, complemento_2)
+                sleep(max((len(texto1) + len(texto2)) / 150, 1))
+        except RuntimeError:
+            pass
+
+    def obter_complementos(self) -> None:
+        """
+        Obtém os complementos para exibir na caixa_texto3
+        """
+        complemento_1:str = texto["esperando"][self.__idioma]
+        complemento_2:str = ""
+        nome_conteudo:str = ""
+
+        try:
+            conteudo1:str = self.caixa_texto1.get("1.0", tk.END)
+            if conteudo1.find("<") != -1 and conteudo1.find(">") != -1:
+                nome_conteudo:str = conteudo1[conteudo1.find("<")+1: conteudo1.find(">")]
+
+            itens:dict = ver_itens("", conteudo1)
+            complemento_1:str = ""
+            n:int = 0
+            caminhos_conhecidos:set = set(itens.keys())
+            for i in itens:
+                complemento_1 += f"({texto['indefinido'][self.__idioma]} {n:02}) {i}\n"
+                n += 1
+        except:
+            pass
+
+        try:
+            caminhos:list = ver_caminhos("", self.caixa_texto2.get("1.0", tk.END))
+            todos_caminhos:set = set()
+            for a in caminhos:
+                if len(a) == 2:
+                    todos_caminhos.add(a[0])
+                    todos_caminhos.add(a[1])
+
+            if len(caminhos_conhecidos) > 0:
+                faltantes:set = todos_caminhos.difference(caminhos_conhecidos)
+
+            n:int = 0
+            for falta in faltantes:
+                complemento_2 += f"({texto['indefinido'][self.__idioma]} {n:02}) {falta}\n"
+                n += 1
+        except:
+            pass
+
+        return complemento_1, complemento_2, nome_conteudo
+
+    def atualizar_caixa_texto3(self, texto1, texto2, nome_conteudo, complemento_1, complemento_2):
+        """
+        Atualiza o texto na caixa_texto3
+        """
+        self.caixa_texto3.config(state="normal")
+        self.caixa_texto3.delete("1.0", "end")
+        self.caixa_texto3.insert("1.0", f"{texto['itens'][self.__idioma]}: {len(texto1)} chr\n{texto['caminhos'][self.__idioma]}: {len(texto2)} chr\nNome: {nome_conteudo}\n{complemento_1}\n{complemento_2}")
+        self.caixa_texto3.config(state="disabled")
+
+
+    def mudar_lingua(self) -> None:
+        """
+        Muda a lingua
+        """
+        if self.__idioma == "ing":
+            self.__idioma = "pt"
+        else:
+            self.__idioma = "ing"
+
+        self.botao_exportar.config(text = texto["exportar"][self.__idioma])
+        self.botao_importar.config(text = texto["importar"][self.__idioma])
+        self.botao_compilar.config(text = texto["compilar"][self.__idioma])
+        self.botao_cor.config(text = texto["cor"][self.__idioma])
+        self.botao_linguagem.config(text = texto["lingua"][self.__idioma])
+        self.title(texto["nome"][self.__idioma])
+
+    def mudar_cor(self) -> None:
+        """
+        Muda entre o modo claro e escuro
+        """
+        if self.__cor == "escuro":
+            self.__cor = "claro"
+        else:
+            self.__cor = "escuro"
+
+        self.configure(bg = cores["fundo"][self.__cor])
+        self.botao_duvida.config(bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
+        self.botao_exportar.config(bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+        self.botao_importar.config(bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+        self.botao_compilar.config(bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+        self.botao_cor.config(bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
+        self.botao_linguagem.config(bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+
+
     def duvida(self) -> None:
         """
         Mostra uma série de instruções para o uso do programa
         """
         if self.__instrucoes == None:
-            self.__instrucoes = _instrucoes_()
+            self.__instrucoes = _instrucoes_(self.__idioma)
             self.__instrucoes.mainloop()
-            return 
+            return
 
         try:
             if not self.__instrucoes.winfo_exists():
-                self.__instrucoes = _instrucoes_()
+                self.__instrucoes = _instrucoes_(self.__idioma)
                 self.__instrucoes.mainloop()
                 return
         except:
-            self.__instrucoes = _instrucoes_()
+            self.__instrucoes = _instrucoes_(self.__idioma)
             self.__instrucoes.mainloop()
             return
 
@@ -158,7 +281,7 @@ class Aplicativo(tk.Tk):
         if conteudo1.find("<") != -1 and conteudo1.find(">") != -1:
             nome_conteudo:str = conteudo1[conteudo1.find("<")+1: conteudo1.find(">")]
         else:
-            messagebox.showwarning(texto["aviso"][idioma], texto["instrucao_export"][idioma])
+            messagebox.showwarning(texto["aviso"][self.__idioma], texto["instrucao_export"][self.__idioma])
             return
 
         pasta_escolhida:str = filedialog.askdirectory()
@@ -197,12 +320,12 @@ class Aplicativo(tk.Tk):
                 criar_diretorios()
             self.salvar("backups", "backups", conteudo1, conteudo2)   
             gerar_grafo(conteudo1, conteudo2, nome_conteudo, pasta_escolhida)
-            messagebox.showwarning(texto["aviso"][idioma], f"{texto['sua_imagem'][idioma]} '{pasta_escolhida}/{nome_conteudo}'")
+            messagebox.showwarning(texto["aviso"][self.__idioma], f"{texto['sua_imagem'][self.__idioma]} '{pasta_escolhida}/{nome_conteudo}'")
 
 class _instrucoes_(tk.Tk):
-    def __init__(self):
+    def __init__(self, _idioma_ = "ing"):
         super().__init__()
-        self.title(texto["instrucoes"][idioma])
+        self.title(texto["instrucoes"][_idioma_])
         self.geometry("500x400")
 
         self.texto_instrucoes = ("""
@@ -293,12 +416,5 @@ style:
         self.texto.insert(tk.END, self.texto_instrucoes)
 
 if __name__ == "__main__":
-    idioma = messagebox.askquestion("Language selection", "Do you want to run the program in English?",
-                                      icon='info', 
-                                      type='yesno')
-    if idioma == "yes":
-        idioma = "ing"
-    else:
-        idioma = "pt"
     app = Aplicativo()
     app.mainloop()
