@@ -64,6 +64,7 @@ class Aplicativo(tk.Tk):
         self.__instrucoes = None
         self.__cor = "escuro"
         self.__idioma = "ing"
+        self.__tamanho = 14
         
         super().__init__()
         self.title(texto["nome"][self.__idioma])
@@ -71,34 +72,38 @@ class Aplicativo(tk.Tk):
         self.geometry("700x500")
 
         #Caixa de animação:
-        self.caixa_animacao = tk.Label(self, text = texto["salvo"][self.__idioma], bg = cores["popup"][self.__cor], bd = 1, relief = "solid", font = ("Times", 20))
+        self.caixa_animacao = tk.Label(self, text = texto["salvo"][self.__idioma], bg = cores["popup"][self.__cor], fg = "White", bd = 1, relief = "solid", font = ("Times", 20))
         self.caixa_animacao.place(x = 20, y= -32)
     
         # Criando as caixas de texto
-        self.caixa_texto1 = tk.Text(self, width = 40, height = 30, font = "Times 12", borderwidth = 2, relief = "sunken")
-        self.caixa_texto2 = tk.Text(self, width = 40, height = 30, font = "Times 12", borderwidth = 2, relief = "sunken")
-        self.caixa_texto3 = tk.Text(self, width = 25, height = 30, font = "Times 12", borderwidth = 2, relief = "sunken")
+        self.caixa_texto1 = tk.Text(self, width = 40, height = 30, font = f"Times {self.__tamanho}", borderwidth = 2, relief = "sunken")
+        self.caixa_texto2 = tk.Text(self, width = 40, height = 30, font = f"Times {self.__tamanho}", borderwidth = 2, relief = "sunken")
+        self.caixa_texto3 = tk.Text(self, width = 25, height = 30, font = f"Times {self.__tamanho}", borderwidth = 2, relief = "sunken")
     
         # Posicionando as caixas de texto usando grid
         self.caixa_texto1.grid(row = 0, column = 0, columnspan = 1, padx = 10, pady = 10, sticky = "nsew")
-        self.caixa_texto2.grid(row = 0, column = 1, columnspan = 1, padx = 10, pady = 10, sticky = "nsew")
-        self.caixa_texto3.grid(row = 0, column = 4, columnspan = 2, padx = 10, pady = 10, sticky = "nsew")
+        self.caixa_texto2.grid(row = 0, column = 1, columnspan = 2, padx = 10, pady = 10, sticky = "nsew")
+        self.caixa_texto3.grid(row = 0, column = 3, columnspan = 4, padx = 10, pady = 10, sticky = "nsew")
     
         # Criando os botões
-        self.botao_duvida = tk.Button(self, text = "?", command = self.duvida, bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
-        self.botao_exportar = tk.Button(self, text = texto["exportar"][self.__idioma], command = self.exportar, bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
-        self.botao_importar = tk.Button(self, text = texto["importar"][self.__idioma], command = self.importar, bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
-        self.botao_compilar = tk.Button(self, text = texto["compilar"][self.__idioma], command = self.compilar, bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
-        self.botao_cor = tk.Button(self, text = texto["cor"][self.__idioma], command = self.mudar_cor, bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
-        self.botao_linguagem = tk.Button(self, text = texto["lingua"][self.__idioma], command = self.mudar_lingua, bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+        self.botao_duvida = tk.Button(self, font = f"Times {self.__tamanho}", text = "?", command = self.duvida, bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
+        self.botao_exportar = tk.Button(self, font = f"Times {self.__tamanho}", text = texto["exportar"][self.__idioma], command = self.exportar, bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+        self.botao_importar = tk.Button(self, font = f"Times {self.__tamanho}", text = texto["importar"][self.__idioma], command = self.importar, bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+        self.botao_compilar = tk.Button(self, font = f"Times {self.__tamanho}", text = texto["compilar"][self.__idioma], command = self.compilar, bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+        self.botao_cor = tk.Button(self, font = f"Times {self.__tamanho}", text = texto["cor"][self.__idioma], command = self.mudar_cor, bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
+        self.botao_linguagem = tk.Button(self, font = f"Times {self.__tamanho}", text = texto["lingua"][self.__idioma], command = self.mudar_lingua, bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
+        self.botao_aumentar = tk.Button(self, font = f"Times {self.__tamanho}", text = "+", command = self.aumentar_letra, bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
+        self.botao_diminuir = tk.Button(self, font = f"Times {self.__tamanho}", text = "-", command = self.diminuir_letra, bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
 
         # Posicionando os botões usando grid
-        self.botao_duvida.grid(row = 1, column = 5, columnspan = 1, padx = 5, pady = 0, sticky = "ew")
-        self.botao_exportar.grid(row = 1, column = 3, columnspan = 2, padx = 10, pady = 10, sticky = "ew")
-        self.botao_importar.grid(row = 1, column = 0, columnspan = 3, padx = 10, pady = 10, sticky = "ew")
-        self.botao_compilar.grid(row = 2, column = 0, columnspan = 4, padx = 10, pady = 10, sticky = "ew")
+        self.botao_duvida.grid(row = 2, column = 4, columnspan = 1, padx = 10, pady = 0, sticky = "ew")
+        self.botao_exportar.grid(row = 1, column = 1, columnspan = 1, padx = 10, pady = 10, sticky = "ew")
+        self.botao_importar.grid(row = 1, column = 0, columnspan = 1, padx = 10, pady = 10, sticky = "ew")
+        self.botao_compilar.grid(row = 2, column = 0, columnspan = 3, padx = 10, pady = 10, sticky = "ew")
         self.botao_cor.grid(row = 2, column = 5, columnspan = 1, padx = 10, pady = 10, sticky = "ew")
-        self.botao_linguagem.grid(row = 2, column = 4, columnspan = 1, padx = 10, pady = 10, sticky = "ew")
+        self.botao_linguagem.grid(row = 1, column = 4, columnspan = 2, padx = 10, pady = 10, sticky = "ew")
+        self.botao_aumentar.grid(row = 1, column = 6, columnspan = 1, padx = 10, pady = 10, sticky = "ew")
+        self.botao_diminuir.grid(row = 2, column = 6, columnspan = 1, padx = 10, pady = 10, sticky = "ew")
 
         # Configurando a geometria da janela para redimensionamento
         self.grid_columnconfigure(0, weight = 1)
@@ -120,27 +125,65 @@ class Aplicativo(tk.Tk):
         self.caixa_texto1.config(height = altura)
         self.caixa_texto2.config(height = altura)
 
-    def atualizar_caixa(self):
+    def mudar_tamanho(self) -> None:
+        """
+        Configura fonte
+        """
+        self.botao_exportar.config(font = f"Times {self.__tamanho}")
+        self.botao_importar.config(font = f"Times {self.__tamanho}")
+        self.botao_compilar.config(font = f"Times {self.__tamanho}")
+        self.botao_cor.config(font = f"Times {self.__tamanho}")
+        self.botao_linguagem.config(font = f"Times {self.__tamanho}")
+        self.botao_aumentar.config(font = f"Times {self.__tamanho}")
+        self.botao_diminuir.config(font = f"Times {self.__tamanho}")
+        self.botao_duvida.config(font = f"Times {self.__tamanho}")
+        self.caixa_texto1.config(font = f"Times {self.__tamanho}")
+        self.caixa_texto2.config(font = f"Times {self.__tamanho}")
+        self.caixa_texto3.config(font = f"Times {self.__tamanho}")
+
+    def aumentar_letra(self) -> None:
+        """
+        Aumenta a letra
+        """
+        self.__tamanho += 1
+        if self.__tamanho > 36:
+            self.__tamanho = 36
+        self.mudar_tamanho()
+
+    def diminuir_letra(self) -> None:
+        """
+        Diminue a letra
+        """
+        self.__tamanho -= 1
+        if self.__tamanho < 6:
+            self.__tamanho = 6
+        self.mudar_tamanho()
+
+    def atualizar_caixa(self) -> None:
         """
         Atualiza o contador de caracteres na caixa_texto3 a cada 5 segundos
         """
         try:
+            texto1:str = " "
+            texto2:str = " "
             while True:
-                complemento_1, complemento_2, nome_conteudo = self.obter_complementos()
-                texto1:str = self.caixa_texto1.get("1.0", "end-1c")
-                texto2:str = self.caixa_texto2.get("1.0", "end-1c")
+                if texto1 != self.caixa_texto1.get("1.0", "end-1c") or texto2 != self.caixa_texto2.get("1.0", "end-1c"):
+                    complemento_1, complemento_2, complemento_3, nome_conteudo = self.obter_complementos()
+                    texto1:str = self.caixa_texto1.get("1.0", "end-1c")
+                    texto2:str = self.caixa_texto2.get("1.0", "end-1c")
 
-                self.atualizar_caixa_texto3(texto1, texto2, nome_conteudo, complemento_1, complemento_2)
-                sleep(max((len(texto1) + len(texto2)) / 150, 1))
+                    self.atualizar_caixa_texto3(texto1, texto2, nome_conteudo, complemento_1, complemento_2, complemento_3)
+                sleep(max((len(texto1) + len(texto2)) / 200, 1))
         except RuntimeError:
             pass
 
-    def obter_complementos(self) -> (str, str, str):
+    def obter_complementos(self) -> (str, str, str, str):
         """
         Obtém os complementos para exibir na caixa_texto3
         """
         complemento_1:str = texto["esperando"][self.__idioma]
         complemento_2:str = ""
+        complemento_3:str = ""
         nome_conteudo:str = ""
 
         try:
@@ -150,41 +193,54 @@ class Aplicativo(tk.Tk):
 
             itens:dict = ver_itens("", conteudo1)
             complemento_1:str = ""
-            n:int = 0
+            n:int = 1
             caminhos_conhecidos:set = set(itens.keys())
             for i in itens:
                 complemento_1 += f"({texto['definidos'][self.__idioma]} {n:02}) {i}\n"
                 n += 1
-        except:
-            pass
+        except Exception as ex:
+            print(ex)
 
         try:
             caminhos:list = ver_caminhos("", self.caixa_texto2.get("1.0", tk.END))
             todos_caminhos:set = set()
+            variaveis:dict = {}
             for a in caminhos:
                 if len(a) == 2:
                     todos_caminhos.add(a[0])
                     todos_caminhos.add(a[1])
+                    if not a[0] in variaveis:
+                        variaveis[a[0]]:set = {a[1]}
+                    else:
+                        variaveis[a[0]].add(a[1])
+            print(variaveis)
+            
+            for var in variaveis:
+                complemento_3 += f"\n{var}:\n"
+                n = 1
+                for individual in variaveis[var]:
+                    complemento_3 += f" ({n:02}) {individual}\n"
+                    n += 1
 
             if len(caminhos_conhecidos) > 0:
                 faltantes:set = todos_caminhos.difference(caminhos_conhecidos)
 
-            n:int = 0
+            n:int = 1
             for falta in faltantes:
                 complemento_2 += f"({texto['indefinido'][self.__idioma]} {n:02}) {falta}\n"
                 n += 1
-        except:
-            pass
+        except Exception as ex:
+            print(ex)
 
-        return complemento_1, complemento_2, nome_conteudo
+        return complemento_1, complemento_2, complemento_3, nome_conteudo
 
-    def atualizar_caixa_texto3(self, texto1, texto2, nome_conteudo, complemento_1, complemento_2) -> None:
+    def atualizar_caixa_texto3(self, texto1, texto2, nome_conteudo, complemento_1, complemento_2, complemento_3) -> None:
         """
         Atualiza o texto na caixa_texto3
         """
         self.caixa_texto3.config(state="normal")
         self.caixa_texto3.delete("1.0", "end")
-        self.caixa_texto3.insert("1.0", f"{texto['itens'][self.__idioma]}: {len(texto1)} chr\n{texto['caminhos'][self.__idioma]}: {len(texto2)} chr\nNome: {nome_conteudo}\n\n{complemento_1}\n{complemento_2}")
+        self.caixa_texto3.insert("1.0", f"{texto['itens'][self.__idioma]}: {len(texto1)} chr\n{texto['caminhos'][self.__idioma]}: {len(texto2)} chr\nNome: {nome_conteudo}\n\n{complemento_1}\n{complemento_2}\n{complemento_3}")
         self.caixa_texto3.config(state="disabled")
 
 
@@ -220,7 +276,8 @@ class Aplicativo(tk.Tk):
         self.botao_compilar.config(bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
         self.botao_cor.config(bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
         self.botao_linguagem.config(bg = cores["botao"][self.__cor]["bg"], fg = cores["botao"][self.__cor]["fg"])
-
+        self.botao_aumentar.config(bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
+        self.botao_diminuir.config(bg = cores["?"][self.__cor]["bg"], fg = cores["?"][self.__cor]["fg"])
 
     def duvida(self) -> None:
         """
