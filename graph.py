@@ -173,7 +173,7 @@ class Aplicativo(tk.Tk):
                     texto2:str = self.caixa_texto2.get("1.0", "end-1c")
 
                     self.atualizar_caixa_texto3(texto1, texto2, nome_conteudo, complemento_1, complemento_2, complemento_3)
-                sleep(max((len(texto1) + len(texto2)) / 200, 1))
+                sleep(0.25)
         except RuntimeError:
             pass
 
@@ -213,9 +213,9 @@ class Aplicativo(tk.Tk):
                         variaveis[a[0]]:set = {a[1]}
                     else:
                         variaveis[a[0]].add(a[1])
-            print(variaveis)
+            #print(variaveis)
             
-            for var in variaveis:
+            for var in sorted(variaveis):
                 complemento_3 += f"\n{var}:\n"
                 n = 1
                 for individual in variaveis[var]:
@@ -226,7 +226,7 @@ class Aplicativo(tk.Tk):
                 faltantes:set = todos_caminhos.difference(caminhos_conhecidos)
 
             n:int = 1
-            for falta in faltantes:
+            for falta in sorted(faltantes):
                 complemento_2 += f"({texto['indefinido'][self.__idioma]} {n:02}) {falta}\n"
                 n += 1
         except Exception as ex:
@@ -242,7 +242,6 @@ class Aplicativo(tk.Tk):
         self.caixa_texto3.delete("1.0", "end")
         self.caixa_texto3.insert("1.0", f"{texto['itens'][self.__idioma]}: {len(texto1)} chr\n{texto['caminhos'][self.__idioma]}: {len(texto2)} chr\nNome: {nome_conteudo}\n\n{complemento_1}\n{complemento_2}\n{complemento_3}")
         self.caixa_texto3.config(state="disabled")
-
 
     def mudar_lingua(self) -> None:
         """
