@@ -8,4 +8,4 @@ After you have opened the ```graph.py```, you will see the import tab, so go to 
 
 ![EX_1](images/ex_1.png)
 
-![EX_2](images/ex_1.png)
+![EX_2](images/ex_2.png)
