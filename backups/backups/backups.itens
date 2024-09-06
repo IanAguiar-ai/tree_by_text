@@ -1,17 +1,38 @@
 
+
 #Templates:
 [pasta] = orange, folder, filled
-[variavel_1] = red, box, dotted
-[variavel_2] = orange, doubleoctagon, dotted
+[arquivo] = red, box, dotted
+[funcao] = orange, doubleoctagon, dotted
+[coisa] = green, doubleoctagon, dotted
 
 #Pastas:
-pasta_1, [pasta]
-pasta_2, [pasta]
-pasta_3, [pasta]
+entradas, [pasta]
+saidas, [pasta]
 
-#Variaveis:
-var_1, [variavel_1]
-var_2, [variavel_1]
-var_3, [variavel_1]
-var_4, [variavel_2]
+config.R, [arquivo]
+configuracao_imagem.R, [arquivo]
+main.R, [arquivo]
+tratamento.R, [arquivo]
+tratamento_funcoes.R, [arquivo]
+treinamento.R, [arquivo]
+predicao.R, [arquivo]
+grafico.R, [arquivo]
 
+YAML, [coisa]
+CSV, [coisa]
+RDS, [coisa]
+JSON, [coisa]
+PNG, [coisa]
+
+criar_pasta, [funcao]
+criar_YAML, [funcao]
+conferir_requisicao, [funcao]
+
+
+chamar_modelo, [funcao]
+salvar_modelo, [funcao]
+
+rodar_predicao, [funcao]
+
+plotar, [funcao]

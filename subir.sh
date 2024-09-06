@@ -1,4 +1,4 @@
-VERSAO="1.0.0"
+VERSAO="1.1.0"
 DATA_HORA=$(date +"%d-%m-%Y - %H:%M")
 MENSAGEM_COMMIT="Versao: $VERSAO - $DATA_HORA"
 

@@ -1,0 +1,20 @@
+<grafo_organizacao>
+
+#Templates:
+[pasta] = orange, folder, filled
+[arquivo] = red, box, dotted
+[funcao] = orange, doubleoctagon, dotted
+
+#Pastas:
+entradas, [pasta]
+saidas, [pasta]
+
+config.R, [arquivo]
+configuracao_imagem.R, [arquivo]
+main.R, [arquivo]
+predicao.R, [arquivo]
+grafico.R, [arquivo]
+tratamento.R, [arquivo]
+tratamento_funcoes.R, [arquivo]
+treinamento.R, [arquivo]
+

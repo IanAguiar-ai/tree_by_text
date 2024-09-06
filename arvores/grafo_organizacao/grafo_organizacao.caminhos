@@ -1,0 +1,10 @@
+sub = configuracao_imagem.R, grafico.R, tratamento.R, tratamento_funcoes.R, treinamento.R, predicao.R
+
+config.R, sub }- main.R
+
+config.R -{ sub
+
+tratamento_funcoes.R -> tratamento.R 
+
+entradas -> main.R -{ entradas, saidas
+

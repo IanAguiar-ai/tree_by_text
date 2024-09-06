@@ -1,15 +1,25 @@
-#Resumos:
-variaveis_indiretas = var_10.c, var_11.h, var_ 12
+todos_logica = tratamento.R, tratamento_funcoes.R, treinamento.R, predicao.R, grafico.R
 
-#Caminho de pastas:
-pasta_1 -{ pasta_2, pasta_3
-pasta_2 -> /pasta_4 -> /pasta_5
+tratamento_funcoes.R -> tratamento.R
 
-#Caminho das variáveis:
-pasta_3 -{ /pasta_6, var_1, var_2
-var_2, var_3 }{ variaveis_indiretas, var_7
+main.R <> config.R -> todos_logica
+main.R -> todos_logica
+main.R <> configuracao_imagem.R
 
-a <> b
-c1 -> c2 -{ c3, c4 }- c5, c6 -> c7, c8 -{ c9, c10 -> c11 -{ c12, c13, c14 <- k10
-z1 -> z2 <- z3 -> z4 -> z6 <- z5 
+usuário -> YAML, CSV -> entradas, tratamento.R, treinamento.R, predicao.R
+entradas, tratamento.R -> YAML, CSV
+
+RDS, JSON -> saidas, predicao.R, grafico.R
+saidas, treinamento.R -> RDS, JSON
+
+criar_pasta, criar_YAML, conferir_requisicao -> tratamento_funcoes.R
+
+chamar_modelo, salvar_modelo -> treinamento.R
+
+rodar_predicao -> predicao.R
+
+plotar -> grafico.R -> PNG <> saidas
+
+
+
 
